@@ -1,6 +1,8 @@
 package main
 
 import (
+	handler "grpc-kitchen/services/orders/handler/orders"
+	"grpc-kitchen/services/orders/service"
 	"log"
 	"net"
 
@@ -13,7 +15,7 @@ type gRPCServer struct {
 
 func NewGRPCServer(addr string) *gRPCServer {
 	return &gRPCServer{addr: addr}
-}	
+}
 
 func (s *gRPCServer) Run() error {
 	lis, err := net.Listen("tcp", s.addr)
@@ -22,6 +24,8 @@ func (s *gRPCServer) Run() error {
 	}
 
 	grpcServer := grpc.NewServer()
-	
+	ordersService := service.NewOrderServce()
+	handler.NewGrpcOrdersService(grpcServer, ordersService)
+
 	return grpcServer.Serve(lis)
 }
